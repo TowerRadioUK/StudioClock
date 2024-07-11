@@ -2,8 +2,14 @@ from flask import Flask, request, jsonify
 import threading
 import tkinter as tk
 import time
+import tomli
 
-DEBUG = True
+try:
+    with open("config.toml", mode="rb") as fp:
+        config = tomli.load(fp)
+except FileNotFoundError:
+    print("config.toml not found.")
+    exit()
 
 # Create the Flask application
 app = Flask(__name__)
@@ -11,7 +17,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return "Welcome to the Tower Radio Studio Clock. Goodbye."
+    return "Tower Radio Studio Clock - harry@hwal.uk"
 
 
 @app.route("/channelLive", methods=["POST"])
@@ -55,7 +61,7 @@ def toggle_lamp(lamp_number, active):
             else:
                 lamp_deadair.config(bg="black")
                 lamp_pil.config(bg="black")
-        
+
         # FAULT
         case 4:
             if active:
@@ -153,14 +159,16 @@ def get_worded_time(current_time):
 
 
 def start_flask_app():
-    app.run(host="0.0.0.0", port=25543)
+    app.run(host=config["server"]["host"], port=config["server"]["port"])
 
 
 # Create the main window
 root = tk.Tk()
-root.title("Tower Radio - Studio Clock")
-if not DEBUG:
+if not config["other"]["debug"]:
+    root.title("Tower Radio Studio Clock - Licensed to harry@hwal.uk")
     root.attributes("-fullscreen", True)
+else:
+    root.title("Tower Radio Studio Clock - Licensed to harry@hwal.uk (Debug)")
 root.configure(bg="black")
 
 # Create the labels for the clock and worded time
@@ -192,7 +200,7 @@ lamp_deadair = tk.Label(
     root, font=("Helvetica", size), width=10, height=4, bg="black", fg="white"
 )
 lamp_fault = tk.Label(
-    root, font=("Helvetica", size), width=9, height=4, bg="black", fg="white"
+    root, font=("Helvetica", size), width=10, height=4, bg="black", fg="white"
 )
 
 lamp_mic1.config(bg="black", text="Mic 1")

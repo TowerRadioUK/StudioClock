@@ -11,24 +11,32 @@ def update_time():
     
     # Update lamp colors and text based on the current minute
     if current_minute % 2 == 0:
-        lamp_00.config(bg='green', text='Mic 1')
+        lamp_00.config(bg='red', text='Mic 1')
+        lamp_200.config(bg='red', text='Mikey')
     else:
         lamp_00.config(bg='black', text='Mic 1')
+        lamp_200.config(bg='black', text='Mikey')
 
     if current_minute % 2 != 0:
         lamp_15.config(bg='green', text='Mic 2')
+        lamp_215.config(bg='green', text='PlayIt\nLive')
     else:
         lamp_15.config(bg='black', text='Mic 2')
+        lamp_215.config(bg='black', text='PlayIt\nLive')
         
     if current_minute == 30:
-        lamp_30.config(bg='green', text='Mic 3')
+        lamp_30.config(bg='blue', text='Mic 3')
+        lamp_230.config(bg='blue', text='Dead\nAir')
     else:
         lamp_30.config(bg='black', text='Mic 3')
+        lamp_230.config(bg='black', text='Dead\nAir')
         
     if current_minute == 45:
-        lamp_45.config(bg='green', text='Mic 4')
+        lamp_45.config(bg='yellow', text='Mic 4')
+        lamp_245.config(bg='yellow', text='test')
     else:
         lamp_45.config(bg='black', text='Mic 4')
+        lamp_245.config(bg='black', text='test')
     
     root.after(1000, update_time)
 
@@ -78,27 +86,41 @@ root.configure(bg='black')
 clock_label = tk.Label(root, font=('Helvetica', 196), fg='white', bg='black')
 worded_label = tk.Label(root, font=('Helvetica', 64), fg='white', bg='black')
 
+size = 36
 # Create the lamp labels with text
-lamp_00 = tk.Label(root, font=('Helvetica', 32), width=5, height=2, bg='black', fg='white')
-lamp_15 = tk.Label(root, font=('Helvetica', 32), width=5, height=2, bg='black', fg='white')
-lamp_30 = tk.Label(root, font=('Helvetica', 32), width=5, height=2, bg='black', fg='white')
-lamp_45 = tk.Label(root, font=('Helvetica', 32), width=5, height=2, bg='black', fg='white')
+lamp_00 = tk.Label(root, font=('Helvetica', size), width=8, height=4, bg='black', fg='white', wraplength=300)
+lamp_15 = tk.Label(root, font=('Helvetica', size), width=8, height=4, bg='black', fg='white', wraplength=300)
+lamp_30 = tk.Label(root, font=('Helvetica', size), width=8, height=4, bg='black', fg='white', wraplength=300)
+lamp_45 = tk.Label(root, font=('Helvetica', size), width=8, height=4, bg='black', fg='white', wraplength=300)
+
+lamp_200 = tk.Label(root, font=('Helvetica', size), width=8, height=4, bg='black', fg='white', wraplength=150)
+lamp_215 = tk.Label(root, font=('Helvetica', size), width=8, height=4, bg='black', fg='white', wraplength=150)
+lamp_230 = tk.Label(root, font=('Helvetica', size), width=8, height=4, bg='black', fg='white', wraplength=150)
+lamp_245 = tk.Label(root, font=('Helvetica', size), width=8, height=4, bg='black', fg='white', wraplength=150)
 
 # Grid layout with centered labels and lamps at the top
-lamp_00.grid(row=3, column=0, padx=10, pady=10, sticky='n')
-lamp_15.grid(row=3, column=1, padx=10, pady=10, sticky='n')
-lamp_30.grid(row=3, column=2, padx=10, pady=10, sticky='n')
-lamp_45.grid(row=3, column=3, padx=10, pady=10, sticky='n')
+lamp_00.grid(row=3, column=0, padx=15, pady=15, sticky='s')
+lamp_15.grid(row=3, column=1, padx=15, pady=15, sticky='s')
+lamp_30.grid(row=3, column=2, padx=15, pady=15, sticky='s')
+lamp_45.grid(row=3, column=3, padx=15, pady=15, sticky='s')
 
-clock_label.grid(row=1, column=0, columnspan=4, sticky='n', padx=20, pady=(root.winfo_screenheight() // 4 - 100, 0))
+# Grid layout with centered labels and lamps at the top
+lamp_200.grid(row=0, column=0, padx=15, pady=15, sticky='n')
+lamp_215.grid(row=0, column=1, padx=15, pady=15, sticky='n')
+lamp_230.grid(row=0, column=2, padx=15, pady=15, sticky='n')
+lamp_245.grid(row=0, column=3, padx=15, pady=15, sticky='n')
+
+clock_label.grid(row=1, column=0, columnspan=4, sticky='n', padx=20, pady=(root.winfo_screenheight() // 4 - 200, 0))
 worded_label.grid(row=2, column=0, columnspan=4, sticky='n', padx=20, pady=10)
 
 root.grid_columnconfigure(0, weight=1)
 root.grid_columnconfigure(1, weight=1)
 root.grid_columnconfigure(2, weight=1)
 root.grid_columnconfigure(3, weight=1)
+root.grid_rowconfigure(0, weight=1)
 root.grid_rowconfigure(1, weight=1)
 root.grid_rowconfigure(2, weight=1)
+root.grid_rowconfigure(3, weight=1)
 
 # Start the clock update loop
 update_time()

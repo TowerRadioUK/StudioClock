@@ -1,10 +1,15 @@
 [server]
+# Web server host IP
 host = "0.0.0.0"
+# Web server port
 port = 25543
 
 [azuracast]
+# AzuraCast Dashboard URL
 radio_url = "https://manage.towerradio.co.uk"
+# AzuraCast API Key
 api_key = ""
+# AzuraCast Station ID
 station_id = 1
 
 [other]

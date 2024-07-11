@@ -4,6 +4,10 @@ import tkinter as tk
 import time
 import tomli
 import azuracast
+import os
+from tkinter import messagebox
+
+VERSION = "1.0.0"
 
 try:
     with open("config.toml", mode="rb") as fp:
@@ -18,7 +22,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return "Tower Radio Studio Clock - harry@hwal.uk"
+    return f"Tower Radio Studio Clock v{VERSION} - harry@hwal.uk"
 
 
 @app.route("/channelLive", methods=["POST"])
@@ -167,10 +171,10 @@ def start_flask_app():
 # Create the main window
 root = tk.Tk()
 if not config["other"]["debug"]:
-    root.title("Tower Radio Studio Clock - Licensed to harry@hwal.uk")
+    root.title(f"Tower Radio Studio Clock v{VERSION} - Licensed to harry@hwal.uk")
     root.attributes("-fullscreen", True)
 else:
-    root.title("Tower Radio Studio Clock - Licensed to harry@hwal.uk (Debug)")
+    root.title(f"Tower Radio Studio Clock v{VERSION} - Licensed to harry@hwal.uk (Debug)")
 root.configure(bg="black")
 
 # Create the labels for the clock and worded time
@@ -210,8 +214,8 @@ lamp_mic2.config(bg="black", text="Mic 2")
 lamp_mic3.config(bg="black", text="Mic 3")
 lamp_mic4.config(bg="black", text="Mic 4")
 
-lamp_mikey.config(bg="black", text="Mikey")
-lamp_pil.config(bg="black", text="PlayIt\nLive")
+lamp_mikey.config(bg="black", text="AutoDJ\nLive")
+lamp_pil.config(bg="black", text="Studio\nLive")
 lamp_deadair.config(bg="black", text="Dead\nAir")
 lamp_fault.config(bg="black", text="FAULT")
 
@@ -251,6 +255,19 @@ update_time()
 
 # Exit on Escape keypress
 root.bind("<Escape>", lambda event: root.attributes("-fullscreen", False))
+
+# Open notepad when "c" is pressed
+root.bind("c", lambda event: os.system("notepad config.toml"))
+
+# Quit with q
+root.bind("q", lambda event: exit())
+
+# Exit on Escape keypress
+root.bind("f", lambda event: root.attributes("-fullscreen", not root.attributes("-fullscreen")))
+
+root.bind("a", lambda event: messagebox.showinfo("About", f"Tower Radio Studio Display\nLicensed to harry@hwal.uk\n\nPress 'c' to edit the config file\nPress 'f' to toggle fullscreen\nPress 'q' to quit\n\nhttps://github.com/TowerRadioUK/TowerRadio-StudioDisplay\n\nVersion {VERSION}"))
+
+
 
 if __name__ == "__main__":
     # Start the Flask app in a separate thread

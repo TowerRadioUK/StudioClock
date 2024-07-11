@@ -3,35 +3,33 @@ import threading
 import tkinter as tk
 import time
 import tomli
-import azuracast
 import os
 from tkinter import messagebox
 
 VERSION = "1.0.0"
+TITLE = f"Tower Radio Studio Clock v{VERSION} - Licensed to harry@hwal.uk"
 
 try:
     with open("config.toml", mode="rb") as fp:
         config = tomli.load(fp)
 except FileNotFoundError:
-    print("config.toml not found.")
+    messagebox.showerror(TITLE, "Unable to locate configuration file. config.toml was not found.")
     exit()
+
+import azuracast
 
 # Create the Flask application
 app = Flask(__name__)
 
-
 @app.route("/")
 def hello():
-    return f"Tower Radio Studio Clock v{VERSION} - harry@hwal.uk"
+    return TITLE
 
 
 @app.route("/channelLive", methods=["POST"])
 def channel_live():
     data = request.get_json()
     lampNumber = data.get("lampNumber")
-
-    # Perform any necessary action based on micNumber
-    print(f"Received lampNumber: {lampNumber}")
 
     # Toggle the lamp before returning the response
     threading.Thread(target=toggle_lamp, args=(lampNumber, data.get("active"))).start()
@@ -56,7 +54,7 @@ def toggle_lamp(lamp_number, active):
             if active:
                 lamp_pil.config(bg="green")
             else:
-                lamp_pil.config(bg="black")
+                lamp_pil.config(bg="#161616")
 
         # Dead Air
         case 4:
@@ -64,43 +62,43 @@ def toggle_lamp(lamp_number, active):
                 lamp_deadair.config(bg="blue")
                 lamp_pil.config(bg="crimson")
             else:
-                lamp_deadair.config(bg="black")
-                lamp_pil.config(bg="black")
+                lamp_deadair.config(bg="#161616")
+                lamp_pil.config(bg="#161616")
 
         # FAULT
         case 4:
             if active:
                 lamp_pil.config(bg="crimson")
             else:
-                lamp_pil.config(bg="black")
+                lamp_pil.config(bg="#161616")
 
         # Mic 1 - Red
         case 5:
             if active:
                 lamp_mic1.config(bg="red")
             else:
-                lamp_mic1.config(bg="black")
+                lamp_mic1.config(bg="#161616")
 
         # Mic 2 - Blue
         case 6:
             if active:
                 lamp_mic2.config(bg="blue")
             else:
-                lamp_mic2.config(bg="black")
+                lamp_mic2.config(bg="#161616")
 
         # Mic 3 - Green
         case 7:
             if active:
                 lamp_mic3.config(bg="green")
             else:
-                lamp_mic3.config(bg="black")
+                lamp_mic3.config(bg="#161616")
 
         # Mic 4 - Yellow
         case 8:
             if active:
                 lamp_mic4.config(bg="orange2")
             else:
-                lamp_mic4.config(bg="black")
+                lamp_mic4.config(bg="#161616")
 
 
 def update_time():
@@ -116,7 +114,7 @@ def update_time():
         if azuracast.is_autodj():
             lamp_mikey.config(bg="darkorchid3")
         else:
-            lamp_mikey.config(bg="black")
+            lamp_mikey.config(bg="#161616")
 
     root.after(1000, update_time)
 
@@ -171,54 +169,54 @@ def start_flask_app():
 # Create the main window
 root = tk.Tk()
 if not config["other"]["debug"]:
-    root.title(f"Tower Radio Studio Clock v{VERSION} - Licensed to harry@hwal.uk")
+    root.title(TITLE)
     root.attributes("-fullscreen", True)
 else:
-    root.title(f"Tower Radio Studio Clock v{VERSION} - Licensed to harry@hwal.uk (Debug)")
-root.configure(bg="black")
+    root.title(f"{TITLE} (Debug)")
+root.configure(bg="#161616")
 
 # Create the labels for the clock and worded time
-website_label = tk.Label(root, font=("Helvetica", 38), fg="yellow", bg="black", text="towerradio.co.uk")
-clock_label = tk.Label(root, font=("Helvetica", 196), fg="white", bg="black")
-worded_label = tk.Label(root, font=("Helvetica", 64), fg="grey", bg="black")
+website_label = tk.Label(root, font=("Helvetica", 38), fg="yellow", bg="#161616", text="towerradio.co.uk")
+clock_label = tk.Label(root, font=("Helvetica", 196), fg="white", bg="#161616")
+worded_label = tk.Label(root, font=("Helvetica", 64), fg="gray95", bg="#161616")
 
 size = 36
 # Create the lamp labels with text
 lamp_mic1 = tk.Label(
-    root, font=("Helvetica", size), width=10, height=4, bg="black", fg="white"
+    root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
 )
 lamp_mic2 = tk.Label(
-    root, font=("Helvetica", size), width=10, height=4, bg="black", fg="white"
+    root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
 )
 lamp_mic3 = tk.Label(
-    root, font=("Helvetica", size), width=10, height=4, bg="black", fg="white"
+    root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
 )
 lamp_mic4 = tk.Label(
-    root, font=("Helvetica", size), width=10, height=4, bg="black", fg="white"
+    root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
 )
 
 lamp_mikey = tk.Label(
-    root, font=("Helvetica", size), width=10, height=4, bg="black", fg="white"
+    root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
 )
 lamp_pil = tk.Label(
-    root, font=("Helvetica", size), width=10, height=4, bg="black", fg="white"
+    root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
 )
 lamp_deadair = tk.Label(
-    root, font=("Helvetica", size), width=10, height=4, bg="black", fg="white"
+    root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
 )
 lamp_fault = tk.Label(
-    root, font=("Helvetica", size), width=10, height=4, bg="black", fg="white"
+    root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
 )
 
-lamp_mic1.config(bg="black", text="Mic 1")
-lamp_mic2.config(bg="black", text="Mic 2")
-lamp_mic3.config(bg="black", text="Mic 3")
-lamp_mic4.config(bg="black", text="Mic 4")
+lamp_mic1.config(bg="#161616", fg="gray95", text="Mic 1")
+lamp_mic2.config(bg="#161616", fg="gray95", text="Mic 2")
+lamp_mic3.config(bg="#161616", fg="gray95", text="Mic 3")
+lamp_mic4.config(bg="#161616", fg="gray95", text="Mic 4")
 
-lamp_mikey.config(bg="black", text="AutoDJ\nLive")
-lamp_pil.config(bg="black", text="Studio\nLive")
-lamp_deadair.config(bg="black", text="Dead\nAir")
-lamp_fault.config(bg="black", text="FAULT")
+lamp_mikey.config(bg="#161616", fg="gray95", text="AutoDJ\nLive")
+lamp_pil.config(bg="#161616", fg="gray95", text="Studio\nLive")
+lamp_deadair.config(bg="#161616", fg="gray95", text="Dead\nAir")
+lamp_fault.config(bg="#161616", fg="gray95", text="FAULT")
 
 # Grid layout with centered labels and lamps at the top
 lamp_mic1.grid(row=4, column=0, padx=15, pady=15, sticky="s")
@@ -238,7 +236,7 @@ website_label.grid(
     columnspan=4,
     sticky="n",
     padx=20,
-    pady=(root.winfo_screenheight() // 4 - 200, 0),
+    pady=0,
 )
 clock_label.grid(
     row=2,

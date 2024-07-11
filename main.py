@@ -14,24 +14,21 @@ def hello():
     return "Welcome to the Tower Radio Studio Clock. Goodbye."
 
 
-# Function to handle the POST request to /micLive
-@app.route("/micLive", methods=["POST"])
-def mic_live():
+@app.route("/channelLive", methods=["POST"])
+def channel_live():
     data = request.get_json()
-    mic_number = data.get("micNumber")
-
-    if mic_number is None:
-        return jsonify({"error": "Mic number parameter is required"}), 400
+    lampNumber = data.get("lampNumber")
 
     # Perform any necessary action based on micNumber
-    print(f"Received micNumber: {mic_number}")
+    print(f"Received lampNumber: {lampNumber}")
 
-    toggle_lamp(mic_number + 4)
+    # Toggle the lamp before returning the response
+    threading.Thread(target=toggle_lamp, args=(lampNumber, data.get("active"))).start()
 
-    return jsonify({"message": f"Received micNumber: {mic_number}"}), 200
+    return jsonify({"message": f"Received lampNumber: {lampNumber}"}), 200
 
 
-def toggle_lamp(lamp_number):
+def toggle_lamp(lamp_number, active):
     # 1 - Mikey
     # 2 - PlayIt Live
     # 3 - Dead Air
@@ -43,30 +40,44 @@ def toggle_lamp(lamp_number):
     # 8 - Mic 4
 
     match lamp_number:
+        # Main Stereo
+        case 2:
+            if active:
+                lamp_pil.config(bg="green")
+            else:
+                lamp_pil.config(bg="black")
+        
+        # FAULT
+        case 4:
+            if active:
+                lamp_pil.config(bg="crimson")
+            else:
+                lamp_pil.config(bg="black")
+
         # Mic 1 - Red
         case 5:
-            if lamp_mic1.cget("bg") == "black":
+            if active:
                 lamp_mic1.config(bg="red")
             else:
                 lamp_mic1.config(bg="black")
 
         # Mic 2 - Blue
         case 6:
-            if lamp_mic2.cget("bg") == "black":
+            if active:
                 lamp_mic2.config(bg="blue")
             else:
                 lamp_mic2.config(bg="black")
 
         # Mic 3 - Green
         case 7:
-            if lamp_mic3.cget("bg") == "black":
+            if active:
                 lamp_mic3.config(bg="green")
             else:
                 lamp_mic3.config(bg="black")
 
         # Mic 4 - Yellow
         case 8:
-            if lamp_mic4.cget("bg") == "black":
+            if active:
                 lamp_mic4.config(bg="orange2")
             else:
                 lamp_mic4.config(bg="black")
@@ -77,29 +88,19 @@ def update_time():
     current_minute = int(time.strftime("%S"))
     worded_time = get_worded_time(current_time)
 
-    clock_label.config(text=current_time, justify="left")
-    worded_label.config(text=worded_time, justify="left")
+    clock_label.config(text=current_time)
+    worded_label.config(text=worded_time)
 
     # Update lamp colors and text based on the current minute
-    if current_minute % 2 == 0:
+    if current_minute == 30:
         lamp_mikey.config(bg="red")
     else:
         lamp_mikey.config(bg="black")
-
-    if current_minute % 2 != 0:
-        lamp_pil.config(bg="green")
-    else:
-        lamp_pil.config(bg="black")
 
     if current_minute == 30:
         lamp_deadair.config(bg="blue")
     else:
         lamp_deadair.config(bg="black")
-
-    if current_minute % 2 == 0:
-        lamp_fault.config(bg="crimson")
-    else:
-        lamp_fault.config(bg="black")
 
     root.after(1000, update_time)
 

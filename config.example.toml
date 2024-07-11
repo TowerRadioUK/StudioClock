@@ -2,5 +2,10 @@
 host = "0.0.0.0"
 port = 25543
 
+[azuracast]
+radio_url = "https://manage.towerradio.co.uk"
+api_key = ""
+station_id = 1
+
 [other]
 debug = false

@@ -3,6 +3,7 @@ import threading
 import tkinter as tk
 import time
 import tomli
+import azuracast
 
 try:
     with open("config.toml", mode="rb") as fp:
@@ -106,11 +107,12 @@ def update_time():
     clock_label.config(text=current_time)
     worded_label.config(text=worded_time)
 
-    # Update lamp colors and text based on the current minute
-    if current_minute == 30:
-        lamp_mikey.config(bg="red")
-    else:
-        lamp_mikey.config(bg="black")
+    # Mikey lamp - Red when AutoDJ is active, updates every 3 seconds
+    if current_minute % 2 == 0:
+        if azuracast.is_autodj():
+            lamp_mikey.config(bg="darkorchid3")
+        else:
+            lamp_mikey.config(bg="black")
 
     root.after(1000, update_time)
 

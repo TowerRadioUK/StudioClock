@@ -46,6 +46,15 @@ def toggle_lamp(lamp_number, active):
                 lamp_pil.config(bg="green")
             else:
                 lamp_pil.config(bg="black")
+
+        # Dead Air
+        case 4:
+            if active:
+                lamp_deadair.config(bg="blue")
+                lamp_pil.config(bg="crimson")
+            else:
+                lamp_deadair.config(bg="black")
+                lamp_pil.config(bg="black")
         
         # FAULT
         case 4:
@@ -96,11 +105,6 @@ def update_time():
         lamp_mikey.config(bg="red")
     else:
         lamp_mikey.config(bg="black")
-
-    if current_minute == 30:
-        lamp_deadair.config(bg="blue")
-    else:
-        lamp_deadair.config(bg="black")
 
     root.after(1000, update_time)
 

@@ -56,19 +56,19 @@ def toggle_lamp(lamp_number, active):
             else:
                 lamp_pil.config(bg="#161616")
 
-        # Dead Air
-        case 4:
+        # Chat
+        case 3:
             if active:
-                lamp_deadair.config(bg="blue")
-                lamp_pil.config(bg="crimson")
+                lamp_chat.config(bg="red")
+                lamp_fault.config(bg="crimson")
             else:
-                lamp_deadair.config(bg="#161616")
-                lamp_pil.config(bg="#161616")
+                lamp_chat.config(bg="#161616")
+                lamp_fault.config(bg="#161616")
 
         # FAULT
         case 4:
             if active:
-                lamp_pil.config(bg="crimson")
+                lamp_fault.config(bg="crimson")
             else:
                 lamp_pil.config(bg="#161616")
 
@@ -201,7 +201,7 @@ lamp_mikey = tk.Label(
 lamp_pil = tk.Label(
     root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
 )
-lamp_deadair = tk.Label(
+lamp_chat = tk.Label(
     root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
 )
 lamp_fault = tk.Label(
@@ -215,7 +215,7 @@ lamp_mic4.config(bg="#161616", fg="gray95", text="Mic 4")
 
 lamp_mikey.config(bg="#161616", fg="gray95", text="AutoDJ\nLive")
 lamp_pil.config(bg="#161616", fg="gray95", text="Studio\nLive")
-lamp_deadair.config(bg="#161616", fg="gray95", text="Dead\nAir")
+lamp_chat.config(bg="#161616", fg="gray95", text="Chat\nActive")
 lamp_fault.config(bg="#161616", fg="gray95", text="FAULT")
 
 # Grid layout with centered labels and lamps at the top
@@ -227,7 +227,7 @@ lamp_mic4.grid(row=4, column=3, padx=15, pady=15, sticky="s")
 # Grid layout with centered labels and lamps at the top
 lamp_mikey.grid(row=0, column=0, padx=15, pady=15, sticky="n")
 lamp_pil.grid(row=0, column=1, padx=15, pady=15, sticky="n")
-lamp_deadair.grid(row=0, column=2, padx=15, pady=15, sticky="n")
+lamp_chat.grid(row=0, column=2, padx=15, pady=15, sticky="n")
 lamp_fault.grid(row=0, column=3, padx=15, pady=15, sticky="n")
 
 website_label.grid(

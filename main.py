@@ -178,8 +178,9 @@ else:
 root.configure(bg="black")
 
 # Create the labels for the clock and worded time
+website_label = tk.Label(root, font=("Helvetica", 38), fg="yellow", bg="black", text="towerradio.co.uk")
 clock_label = tk.Label(root, font=("Helvetica", 196), fg="white", bg="black")
-worded_label = tk.Label(root, font=("Helvetica", 64), fg="white", bg="black")
+worded_label = tk.Label(root, font=("Helvetica", 64), fg="grey", bg="black")
 
 size = 36
 # Create the lamp labels with text
@@ -220,10 +221,10 @@ lamp_deadair.config(bg="black", text="Dead\nAir")
 lamp_fault.config(bg="black", text="FAULT")
 
 # Grid layout with centered labels and lamps at the top
-lamp_mic1.grid(row=3, column=0, padx=15, pady=15, sticky="s")
-lamp_mic2.grid(row=3, column=1, padx=15, pady=15, sticky="s")
-lamp_mic3.grid(row=3, column=2, padx=15, pady=15, sticky="s")
-lamp_mic4.grid(row=3, column=3, padx=15, pady=15, sticky="s")
+lamp_mic1.grid(row=4, column=0, padx=15, pady=15, sticky="s")
+lamp_mic2.grid(row=4, column=1, padx=15, pady=15, sticky="s")
+lamp_mic3.grid(row=4, column=2, padx=15, pady=15, sticky="s")
+lamp_mic4.grid(row=4, column=3, padx=15, pady=15, sticky="s")
 
 # Grid layout with centered labels and lamps at the top
 lamp_mikey.grid(row=0, column=0, padx=15, pady=15, sticky="n")
@@ -231,7 +232,7 @@ lamp_pil.grid(row=0, column=1, padx=15, pady=15, sticky="n")
 lamp_deadair.grid(row=0, column=2, padx=15, pady=15, sticky="n")
 lamp_fault.grid(row=0, column=3, padx=15, pady=15, sticky="n")
 
-clock_label.grid(
+website_label.grid(
     row=1,
     column=0,
     columnspan=4,
@@ -239,7 +240,15 @@ clock_label.grid(
     padx=20,
     pady=(root.winfo_screenheight() // 4 - 200, 0),
 )
-worded_label.grid(row=2, column=0, columnspan=4, sticky="n", padx=20, pady=10)
+clock_label.grid(
+    row=2,
+    column=0,
+    columnspan=4,
+    sticky="n",
+    padx=20,
+    pady=10,
+)
+worded_label.grid(row=3, column=0, columnspan=4, sticky="n", padx=20, pady=10)
 
 root.grid_columnconfigure(0, weight=1)
 root.grid_columnconfigure(1, weight=1)
@@ -249,6 +258,7 @@ root.grid_rowconfigure(0, weight=1)
 root.grid_rowconfigure(1, weight=1)
 root.grid_rowconfigure(2, weight=1)
 root.grid_rowconfigure(3, weight=1)
+root.grid_rowconfigure(4, weight=1)
 
 # Start the clock update loop
 update_time()
@@ -260,10 +270,12 @@ root.bind("<Escape>", lambda event: root.attributes("-fullscreen", False))
 root.bind("c", lambda event: os.system("notepad config.toml"))
 
 # Quit with q
-root.bind("q", lambda event: exit())
+root.bind("q", lambda event: messagebox.askquestion("Quit", "Are you sure you want to quit?") == "yes" and exit())
 
 # Exit on Escape keypress
 root.bind("f", lambda event: root.attributes("-fullscreen", not root.attributes("-fullscreen")))
+root.bind("<F11>", lambda event: root.attributes("-fullscreen", not root.attributes("-fullscreen")))
+
 
 root.bind("a", lambda event: messagebox.showinfo("About", f"Tower Radio Studio Display\nLicensed to harry@hwal.uk\n\nPress 'c' to edit the config file\nPress 'f' to toggle fullscreen\nPress 'q' to quit\n\nhttps://github.com/TowerRadioUK/TowerRadio-StudioDisplay\n\nVersion {VERSION}"))
 

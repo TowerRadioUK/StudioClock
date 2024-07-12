@@ -79,17 +79,17 @@ def toggle_lamp(lamp_number, active):
             else:
                 lamp_mic1.config(bg="#161616")
 
-        # Mic 2 - Blue
+        # Mic 2 - Green
         case 6:
             if active:
-                lamp_mic2.config(bg="blue")
+                lamp_mic2.config(bg="green")
             else:
                 lamp_mic2.config(bg="#161616")
 
-        # Mic 3 - Green
+        # Mic 3 - Blue
         case 7:
             if active:
-                lamp_mic3.config(bg="green")
+                lamp_mic3.config(bg="blue")
             else:
                 lamp_mic3.config(bg="#161616")
 

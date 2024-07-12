@@ -108,7 +108,7 @@ def update_time():
     worded_label.config(text=worded_time)
 
     # Mikey lamp - Red when AutoDJ is active, updates every 3 seconds
-    if current_minute % 2 == 0:
+    if current_minute % 3 == 0:
         np_label.config(text=azuracast.get_now_playing())
         if azuracast.get_streamer() == '':
             lamp_mikey.config(bg="darkorchid3")

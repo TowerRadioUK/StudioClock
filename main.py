@@ -111,6 +111,7 @@ def update_time():
 
     # Mikey lamp - Red when AutoDJ is active, updates every 3 seconds
     if current_minute % 2 == 0:
+        np_label.config(text=azuracast.now_playing())
         if azuracast.is_autodj():
             lamp_mikey.config(bg="darkorchid3")
         else:
@@ -178,7 +179,8 @@ root.configure(bg="#161616")
 # Create the labels for the clock and worded time
 website_label = tk.Label(root, font=("Helvetica", 38), fg="yellow", bg="#161616", text="towerradio.co.uk")
 clock_label = tk.Label(root, font=("Helvetica", 196), fg="white", bg="#161616")
-worded_label = tk.Label(root, font=("Helvetica", 64), fg="gray95", bg="#161616")
+worded_label = tk.Label(root, font=("Helvetica", 52), fg="gray95", bg="#161616")
+np_label = tk.Label(root, font=("Helvetica", 32), fg="yellow", bg="#161616", text=azuracast.now_playing())
 
 size = 36
 # Create the lamp labels with text
@@ -219,10 +221,10 @@ lamp_chat.config(bg="#161616", fg="gray95", text="Chat\nActive")
 lamp_fault.config(bg="#161616", fg="gray95", text="FAULT")
 
 # Grid layout with centered labels and lamps at the top
-lamp_mic1.grid(row=4, column=0, padx=15, pady=15, sticky="s")
-lamp_mic2.grid(row=4, column=1, padx=15, pady=15, sticky="s")
-lamp_mic3.grid(row=4, column=2, padx=15, pady=15, sticky="s")
-lamp_mic4.grid(row=4, column=3, padx=15, pady=15, sticky="s")
+lamp_mic1.grid(row=5, column=0, padx=15, pady=15, sticky="s")
+lamp_mic2.grid(row=5, column=1, padx=15, pady=15, sticky="s")
+lamp_mic3.grid(row=5, column=2, padx=15, pady=15, sticky="s")
+lamp_mic4.grid(row=5, column=3, padx=15, pady=15, sticky="s")
 
 # Grid layout with centered labels and lamps at the top
 lamp_mikey.grid(row=0, column=0, padx=15, pady=15, sticky="n")
@@ -247,6 +249,7 @@ clock_label.grid(
     pady=10,
 )
 worded_label.grid(row=3, column=0, columnspan=4, sticky="n", padx=20, pady=10)
+np_label.grid(row=4, column=0, columnspan=4, sticky="n", padx=20, pady=10)
 
 root.grid_columnconfigure(0, weight=1)
 root.grid_columnconfigure(1, weight=1)
@@ -257,6 +260,7 @@ root.grid_rowconfigure(1, weight=1)
 root.grid_rowconfigure(2, weight=1)
 root.grid_rowconfigure(3, weight=1)
 root.grid_rowconfigure(4, weight=1)
+root.grid_rowconfigure(5, weight=1)
 
 # Start the clock update loop
 update_time()

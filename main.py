@@ -6,7 +6,7 @@ import tomli
 import os
 from tkinter import messagebox
 
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 TITLE = f"Tower Radio Studio Clock v{VERSION} - Licensed to harry@hwal.uk"
 
 try:
@@ -22,6 +22,10 @@ import azuracast
 
 # Create the Flask application
 app = Flask(__name__)
+
+# Global dictionary to keep track of active microphones and their start times
+mic_start_times = {}
+mic_threads = {}
 
 
 @app.route("/")
@@ -41,6 +45,14 @@ def channel_live():
 
 
 def toggle_lamp(lamp_number, active):
+    global mic_start_times, mic_threads
+
+    def update_mic_timer(lamp, mic_number):
+        while mic_start_times.get(mic_number):
+            elapsed_time = int(time.time() - mic_start_times[mic_number])
+            lamp.config(text=f"Mic {mic_number}\n({elapsed_time})")
+            time.sleep(1)
+
     # 1 - Mikey
     # 2 - Streamer connected
     # 3 - Atrium listening
@@ -64,54 +76,70 @@ def toggle_lamp(lamp_number, active):
             if active:
                 lamp_fault.config(bg="crimson", text="FAULT")
             else:
-                lamp_pil.config(bg="#161616")
+                lamp_fault.config(bg="#161616", text="FAULT")
 
         # FAULT - Chat active
         case 41:
             if active:
                 lamp_fault.config(bg="crimson", text="FAULT\nChat active")
             else:
-                lamp_pil.config(bg="#161616")
+                lamp_fault.config(bg="#161616", text="FAULT")
 
         # Mic 1 - Red
         case 5:
             if active:
+                mic_start_times[1] = time.time()
                 lamp_mic1.config(bg="red", text="Mic 1\n(0)")
+                mic_threads[1] = threading.Thread(target=update_mic_timer, args=(lamp_mic1, 1))
+                mic_threads[1].start()
             else:
-                lamp_mic1.config(bg="#161616", text="Mic 1")
+                mic_start_times.pop(1, None)
+                lamp_mic1.config(bg="#161616")
 
         # Mic 2 - Green
         case 6:
             if active:
+                mic_start_times[2] = time.time()
                 lamp_mic2.config(bg="green", text="Mic 2\n(0)")
+                mic_threads[2] = threading.Thread(target=update_mic_timer, args=(lamp_mic2, 2))
+                mic_threads[2].start()
             else:
-                lamp_mic2.config(bg="#161616", text="Mic 2")
+                mic_start_times.pop(2, None)
+                lamp_mic2.config(bg="#161616")
 
         # Mic 3 - Blue
         case 7:
             if active:
+                mic_start_times[3] = time.time()
                 lamp_mic3.config(bg="blue", text="Mic 3\n(0)")
+                mic_threads[3] = threading.Thread(target=update_mic_timer, args=(lamp_mic3, 3))
+                mic_threads[3].start()
             else:
-                lamp_mic3.config(bg="#161616", text="Mic 3")
+                mic_start_times.pop(3, None)
+                lamp_mic3.config(bg="#161616")
 
         # Mic 4 - Yellow
         case 8:
             if active:
+                mic_start_times[4] = time.time()
                 lamp_mic4.config(bg="orange2", text="Mic 4\n(0)")
+                mic_threads[4] = threading.Thread(target=update_mic_timer, args=(lamp_mic4, 4))
+                mic_threads[4].start()
             else:
-                lamp_mic4.config(bg="#161616", text="Mic 4")
+                mic_start_times.pop(4, None)
+                lamp_mic4.config(bg="#161616")
 
 
 def update_time():
     current_time = time.strftime("%H:%M:%S")
-    current_minute = int(time.strftime("%S"))
+    current_seconds = int(time.strftime("%S"))
     worded_time = get_worded_time(current_time)
 
     clock_label.config(text=current_time)
     worded_label.config(text=worded_time)
 
     # Mikey lamp - Red when AutoDJ is active, updates every 3 seconds
-    if current_minute % 3 == 0:
+    if current_seconds % 3 == 0:
         np_label.config(text=azuracast.get_now_playing())
         if azuracast.get_streamer() == "":
             lamp_mikey.config(bg="darkorchid3")
@@ -121,7 +149,7 @@ def update_time():
             lamp_pil.config(bg="green")
             lamp_mikey.config(bg="#161616")
 
-    root.after(1000, update_time)
+    root.after(500, update_time)
 
 
 def get_worded_time(current_time):

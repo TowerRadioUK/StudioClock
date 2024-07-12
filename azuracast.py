@@ -16,7 +16,8 @@ client = AzuracastClient(
 station = client.station(config["azuracast"]["station_id"])
 
 def now_playing():
-    return client.now_playing(station.id).now_playing.song.title
+    np = client.now_playing(station.id).now_playing
+    return np.song.title + " by " + np.song.artist
 
 def is_autodj():
     return client.now_playing(station.id).now_playing.streamer == ''

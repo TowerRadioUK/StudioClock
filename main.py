@@ -13,13 +13,16 @@ try:
     with open("config.toml", mode="rb") as fp:
         config = tomli.load(fp)
 except FileNotFoundError:
-    messagebox.showerror(TITLE, "Unable to locate configuration file. config.toml was not found.")
+    messagebox.showerror(
+        TITLE, "Unable to locate configuration file. config.toml was not found."
+    )
     exit()
 
 import azuracast
 
 # Create the Flask application
 app = Flask(__name__)
+
 
 @app.route("/")
 def hello():
@@ -73,30 +76,30 @@ def toggle_lamp(lamp_number, active):
         # Mic 1 - Red
         case 5:
             if active:
-                lamp_mic1.config(bg="red")
+                lamp_mic1.config(bg="red", text="Mic 1\n(0)")
             else:
-                lamp_mic1.config(bg="#161616")
+                lamp_mic1.config(bg="#161616", text="Mic 1")
 
         # Mic 2 - Green
         case 6:
             if active:
-                lamp_mic2.config(bg="green")
+                lamp_mic2.config(bg="green", text="Mic 2\n(0)")
             else:
-                lamp_mic2.config(bg="#161616")
+                lamp_mic2.config(bg="#161616", text="Mic 2")
 
         # Mic 3 - Blue
         case 7:
             if active:
-                lamp_mic3.config(bg="blue")
+                lamp_mic3.config(bg="blue", text="Mic 3\n(0)")
             else:
-                lamp_mic3.config(bg="#161616")
+                lamp_mic3.config(bg="#161616", text="Mic 3")
 
         # Mic 4 - Yellow
         case 8:
             if active:
-                lamp_mic4.config(bg="orange2")
+                lamp_mic4.config(bg="orange2", text="Mic 4\n(0)")
             else:
-                lamp_mic4.config(bg="#161616")
+                lamp_mic4.config(bg="#161616", text="Mic 4")
 
 
 def update_time():
@@ -110,9 +113,9 @@ def update_time():
     # Mikey lamp - Red when AutoDJ is active, updates every 3 seconds
     if current_minute % 3 == 0:
         np_label.config(text=azuracast.get_now_playing())
-        if azuracast.get_streamer() == '':
+        if azuracast.get_streamer() == "":
             lamp_mikey.config(bg="darkorchid3")
-        elif azuracast.get_streamer() == 'FAULT':
+        elif azuracast.get_streamer() == "FAULT":
             lamp_fault.config(bg="crimson", text="FAULT\nNo streamer")
         else:
             lamp_pil.config(bg="green")
@@ -178,10 +181,18 @@ else:
 root.configure(bg="#161616")
 
 # Create the labels for the clock and worded time
-website_label = tk.Label(root, font=("Helvetica", 38), fg="yellow", bg="#161616", text="towerradio.co.uk")
+website_label = tk.Label(
+    root, font=("Helvetica", 38), fg="yellow", bg="#161616", text="towerradio.co.uk"
+)
 clock_label = tk.Label(root, font=("Helvetica", 196), fg="white", bg="#161616")
 worded_label = tk.Label(root, font=("Helvetica", 52), fg="gray95", bg="#161616")
-np_label = tk.Label(root, font=("Helvetica", 32), fg="yellow", bg="#161616", text=azuracast.get_now_playing())
+np_label = tk.Label(
+    root,
+    font=("Helvetica", 32),
+    fg="yellow",
+    bg="#161616",
+    text=azuracast.get_now_playing(),
+)
 
 size = 36
 # Create the lamp labels with text
@@ -273,18 +284,38 @@ root.bind("<Escape>", lambda event: root.attributes("-fullscreen", False))
 root.bind("c", lambda event: os.system("notepad config.toml"))
 
 # Quit with q
-root.bind("q", lambda event: messagebox.askquestion(TITLE, "Are you sure you want to quit?") == "yes" and exit())
+root.bind(
+    "q",
+    lambda event: messagebox.askquestion(TITLE, "Are you sure you want to quit?")
+    == "yes"
+    and exit(),
+)
 
 # Exit on Escape keypress
-root.bind("f", lambda event: root.attributes("-fullscreen", not root.attributes("-fullscreen")))
-root.bind("<F11>", lambda event: root.attributes("-fullscreen", not root.attributes("-fullscreen")))
+root.bind(
+    "f",
+    lambda event: root.attributes("-fullscreen", not root.attributes("-fullscreen")),
+)
+root.bind(
+    "<F11>",
+    lambda event: root.attributes("-fullscreen", not root.attributes("-fullscreen")),
+)
 
 # Clear fault on "x"
-root.bind("x", lambda event: messagebox.showinfo(TITLE, "Cleared fault") and lamp_fault.config(bg="#161616", text="FAULT"))
+root.bind(
+    "x",
+    lambda event: messagebox.showinfo(TITLE, "Cleared fault")
+    and lamp_fault.config(bg="#161616", text="FAULT"),
+)
 
 # About dialog on "a"
-root.bind("a", lambda event: messagebox.showinfo("About", f"Tower Radio Studio Display\nLicensed to harry@hwal.uk\n\nPress 'c' to edit the config file\nPress 'f' to toggle fullscreen\nPress 'q' to quit\nPress 'x' to clear faults\n\nhttps://github.com/TowerRadioUK/TowerRadio-StudioDisplay\n\nVersion {VERSION}"))
-
+root.bind(
+    "a",
+    lambda event: messagebox.showinfo(
+        "About",
+        f"Tower Radio Studio Display\nLicensed to harry@hwal.uk\n\nPress 'c' to edit the config file\nPress 'f' to toggle fullscreen\nPress 'q' to quit\nPress 'x' to clear faults\n\nhttps://github.com/TowerRadioUK/TowerRadio-StudioDisplay\n\nVersion {VERSION}",
+    ),
+)
 
 
 if __name__ == "__main__":

@@ -9,11 +9,11 @@ except FileNotFoundError:
     exit()
 
 client = AzuracastClient(
-    radio_url=config["azuracast"]["radio_url"],
-    x_api_key=config["azuracast"]["api_key"]
+    radio_url=config["azuracast"]["radio_url"], x_api_key=config["azuracast"]["api_key"]
 )
 
 station = client.station(config["azuracast"]["station_id"])
+
 
 def get_now_playing():
     try:
@@ -22,8 +22,9 @@ def get_now_playing():
     except:
         return "No song playing."
 
+
 def get_streamer():
     try:
         return client.now_playing(station.id).now_playing.streamer
     except:
-        return 'FAULT'
+        return "FAULT"

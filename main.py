@@ -39,9 +39,9 @@ def channel_live():
 
 def toggle_lamp(lamp_number, active):
     # 1 - Mikey
-    # 2 - PlayIt Live
-    # 3 - Dead Air
-    # 4 - Fault
+    # 2 - Streamer connected
+    # 3 - Atrium listening
+    # 4 - FAULT
 
     # 5 - Mic 1
     # 6 - Mic 2
@@ -56,19 +56,17 @@ def toggle_lamp(lamp_number, active):
             else:
                 lamp_pil.config(bg="#161616")
 
-        # Chat
-        case 3:
-            if active:
-                lamp_chat.config(bg="red")
-                lamp_fault.config(bg="crimson")
-            else:
-                lamp_chat.config(bg="#161616")
-                lamp_fault.config(bg="#161616")
-
         # FAULT
         case 4:
             if active:
-                lamp_fault.config(bg="crimson")
+                lamp_fault.config(bg="crimson", text="FAULT")
+            else:
+                lamp_pil.config(bg="#161616")
+
+        # FAULT - Chat active
+        case 41:
+            if active:
+                lamp_fault.config(bg="crimson", text="FAULT\nChat active")
             else:
                 lamp_pil.config(bg="#161616")
 
@@ -111,10 +109,13 @@ def update_time():
 
     # Mikey lamp - Red when AutoDJ is active, updates every 3 seconds
     if current_minute % 2 == 0:
-        np_label.config(text=azuracast.now_playing())
-        if azuracast.is_autodj():
+        np_label.config(text=azuracast.get_now_playing())
+        if azuracast.get_streamer() == '':
             lamp_mikey.config(bg="darkorchid3")
+        elif azuracast.get_streamer() == 'FAULT':
+            lamp_fault.config(bg="crimson", text="FAULT\nNo streamer")
         else:
+            lamp_pil.config(bg="green")
             lamp_mikey.config(bg="#161616")
 
     root.after(1000, update_time)
@@ -180,7 +181,7 @@ root.configure(bg="#161616")
 website_label = tk.Label(root, font=("Helvetica", 38), fg="yellow", bg="#161616", text="towerradio.co.uk")
 clock_label = tk.Label(root, font=("Helvetica", 196), fg="white", bg="#161616")
 worded_label = tk.Label(root, font=("Helvetica", 52), fg="gray95", bg="#161616")
-np_label = tk.Label(root, font=("Helvetica", 32), fg="yellow", bg="#161616", text=azuracast.now_playing())
+np_label = tk.Label(root, font=("Helvetica", 32), fg="yellow", bg="#161616", text=azuracast.get_now_playing())
 
 size = 36
 # Create the lamp labels with text
@@ -203,7 +204,7 @@ lamp_mikey = tk.Label(
 lamp_pil = tk.Label(
     root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
 )
-lamp_chat = tk.Label(
+lamp_atrium = tk.Label(
     root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
 )
 lamp_fault = tk.Label(
@@ -217,7 +218,7 @@ lamp_mic4.config(bg="#161616", fg="gray95", text="Mic 4")
 
 lamp_mikey.config(bg="#161616", fg="gray95", text="AutoDJ\nLive")
 lamp_pil.config(bg="#161616", fg="gray95", text="Studio\nLive")
-lamp_chat.config(bg="#161616", fg="gray95", text="Chat\nActive")
+lamp_atrium.config(bg="#161616", fg="gray95", text="Atrium\nPlaying")
 lamp_fault.config(bg="#161616", fg="gray95", text="FAULT")
 
 # Grid layout with centered labels and lamps at the top
@@ -229,7 +230,7 @@ lamp_mic4.grid(row=5, column=3, padx=15, pady=15, sticky="s")
 # Grid layout with centered labels and lamps at the top
 lamp_mikey.grid(row=0, column=0, padx=15, pady=15, sticky="n")
 lamp_pil.grid(row=0, column=1, padx=15, pady=15, sticky="n")
-lamp_chat.grid(row=0, column=2, padx=15, pady=15, sticky="n")
+lamp_atrium.grid(row=0, column=2, padx=15, pady=15, sticky="n")
 lamp_fault.grid(row=0, column=3, padx=15, pady=15, sticky="n")
 
 website_label.grid(
@@ -272,14 +273,17 @@ root.bind("<Escape>", lambda event: root.attributes("-fullscreen", False))
 root.bind("c", lambda event: os.system("notepad config.toml"))
 
 # Quit with q
-root.bind("q", lambda event: messagebox.askquestion("Quit", "Are you sure you want to quit?") == "yes" and exit())
+root.bind("q", lambda event: messagebox.askquestion(TITLE, "Are you sure you want to quit?") == "yes" and exit())
 
 # Exit on Escape keypress
 root.bind("f", lambda event: root.attributes("-fullscreen", not root.attributes("-fullscreen")))
 root.bind("<F11>", lambda event: root.attributes("-fullscreen", not root.attributes("-fullscreen")))
 
+# Clear fault on "x"
+root.bind("x", lambda event: messagebox.showinfo(TITLE, "Cleared fault") and lamp_fault.config(bg="#161616", text="FAULT"))
 
-root.bind("a", lambda event: messagebox.showinfo("About", f"Tower Radio Studio Display\nLicensed to harry@hwal.uk\n\nPress 'c' to edit the config file\nPress 'f' to toggle fullscreen\nPress 'q' to quit\n\nhttps://github.com/TowerRadioUK/TowerRadio-StudioDisplay\n\nVersion {VERSION}"))
+# About dialog on "a"
+root.bind("a", lambda event: messagebox.showinfo("About", f"Tower Radio Studio Display\nLicensed to harry@hwal.uk\n\nPress 'c' to edit the config file\nPress 'f' to toggle fullscreen\nPress 'q' to quit\nPress 'x' to clear faults\n\nhttps://github.com/TowerRadioUK/TowerRadio-StudioDisplay\n\nVersion {VERSION}"))
 
 
 

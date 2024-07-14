@@ -143,6 +143,7 @@ def update_time():
         np_label.config(text=azuracast.get_now_playing())
         if azuracast.get_streamer() == "":
             lamp_mikey.config(bg="darkorchid3")
+            lamp_pil.config(bg="#161616")
         elif azuracast.get_streamer() == "FAULT":
             lamp_fault.config(bg="crimson", text="FAULT\nNo streamer")
         else:

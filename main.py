@@ -66,9 +66,7 @@ def toggle_lamp(lamp_number, active):
     match lamp_number:
         # Main Stereo
         case 2:
-            if active:
-                lamp_pil.config(bg="green")
-            else:
+            if not active:
                 lamp_pil.config(bg="#161616")
 
         # FAULT

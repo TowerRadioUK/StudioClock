@@ -6,6 +6,11 @@ station_website = "towerradio.co.uk"
 # License email
 license_email = "harry@towerradio.co.uk"
 
+# Location for weather API
+[location]
+lat = "52.7000000"
+lon = "-0.1000000"
+
 [server]
 # Web server host IP
 host = "0.0.0.0"

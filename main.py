@@ -5,8 +5,9 @@ import time
 import tomli
 import os
 from tkinter import messagebox
+import weather
 
-VERSION = "1.0.2"
+VERSION = "1.1.0"
 TITLE = f"Tower Radio Studio Clock v{VERSION}"
 
 try:
@@ -29,6 +30,9 @@ app = Flask(__name__)
 mic_start_times = {}
 mic_threads = {}
 
+
+# Weather information
+lat, lon = config["location"]["lat"], config["location"]["lon"]
 
 @app.route("/")
 def hello():
@@ -139,6 +143,14 @@ def update_time():
     worded_label.config(text=worded_time)
 
     # Mikey lamp - Red when AutoDJ is active, updates every 3 seconds
+
+    if current_time.endswith("0:00"):
+        temperature, weather_code = weather.get_weather(lat, lon)
+        weather_desc = weather.weather_description(weather_code)
+        website_label.config(
+            text=f"{config['info']['station_website']}\n{temperature}°C, {weather_desc}"
+        )
+
     if current_seconds % 3 == 0:
         np_label.config(text=azuracast.get_now_playing())
         if azuracast.get_streamer() == "":
@@ -210,8 +222,10 @@ else:
 root.configure(bg="#161616")
 
 # Create the labels for the clock and worded time
+temperature, weather_code, a = weather.get_weather(lat, lon)
+weather_desc = weather.weather_description(weather_code)
 website_label = tk.Label(
-    root, font=("Helvetica", 38), fg="yellow", bg="#161616", text=config['info']['station_website']
+    root, font=("Helvetica", 38), fg="yellow", bg="#161616", text=f"{config['info']['station_website']}\n{temperature}°C, {weather_desc}"
 )
 clock_label = tk.Label(root, font=("Helvetica", 196), fg="white", bg="#161616")
 worded_label = tk.Label(root, font=("Helvetica", 52), fg="gray95", bg="#161616")

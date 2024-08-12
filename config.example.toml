@@ -1,3 +1,11 @@
+[info]
+# Station name
+station_name = "Tower Radio"
+# Station website
+station_website = "towerradio.co.uk"
+# License email
+license_email = "harry@towerradio.co.uk"
+
 [server]
 # Web server host IP
 host = "0.0.0.0"

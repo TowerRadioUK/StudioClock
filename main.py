@@ -6,8 +6,8 @@ import tomli
 import os
 from tkinter import messagebox
 
-VERSION = "1.0.1"
-TITLE = f"Tower Radio Studio Clock v{VERSION} - Licensed to harry@hwal.uk"
+VERSION = "1.0.2"
+TITLE = f"Tower Radio Studio Clock v{VERSION}"
 
 try:
     with open("config.toml", mode="rb") as fp:
@@ -17,6 +17,8 @@ except FileNotFoundError:
         TITLE, "Unable to locate configuration file. config.toml was not found."
     )
     exit()
+
+TITLE = f"{config['info']['station_name']} Studio Clock v{VERSION} - Licensed to {config['info']['license_email']}"
 
 import azuracast
 
@@ -209,7 +211,7 @@ root.configure(bg="#161616")
 
 # Create the labels for the clock and worded time
 website_label = tk.Label(
-    root, font=("Helvetica", 38), fg="yellow", bg="#161616", text="towerradio.co.uk"
+    root, font=("Helvetica", 38), fg="yellow", bg="#161616", text=config['info']['station_website']
 )
 clock_label = tk.Label(root, font=("Helvetica", 196), fg="white", bg="#161616")
 worded_label = tk.Label(root, font=("Helvetica", 52), fg="gray95", bg="#161616")
@@ -340,7 +342,7 @@ root.bind(
     "a",
     lambda event: messagebox.showinfo(
         "About",
-        f"Tower Radio Studio Display\nLicensed to harry@hwal.uk\n\nPress 'c' to edit the config file\nPress 'f' to toggle fullscreen\nPress 'q' to quit\nPress 'x' to clear faults\n\nhttps://github.com/TowerRadioUK/TowerRadio-StudioDisplay\n\nVersion {VERSION}",
+        f"{config['info']['station_name']} Studio Display\nLicensed to {config['info']['license_email']}\n\nPress 'c' to edit the config file\nPress 'f' to toggle fullscreen\nPress 'q' to quit\nPress 'x' to clear faults\n\nhttps://github.com/TowerRadioUK/StudioClock\n\nVersion {VERSION}",
     ),
 )
 

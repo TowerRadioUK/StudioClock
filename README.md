@@ -1,5 +1,7 @@
 # Tower Radio - Studio Clock
 
+![image](https://github.com/user-attachments/assets/0762136f-a5d0-4d46-9993-709240283191)
+
 ## Installation
 
 1. Install Python 3.12+ from the Microsoft Store

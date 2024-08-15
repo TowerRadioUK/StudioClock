@@ -9,11 +9,11 @@ def get_weather(town, api):
         data = response.json()['main']
         wind = response.json()['wind']
         weather = response.json()['weather']
-        temperature = data['temp']
+        temperature = round(int(data['temp']))
         windspeed = wind['speed']
         desc = weather[0]['description']
         return temperature, desc, windspeed
     elif response.status_code == 401: # Unauthorised - invalid API key
-        raise ValueError(data['message'])
+        raise ValueError("Invalid API key")
     else: 
         raise ValueError("Unable to fetch weather data.")

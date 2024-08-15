@@ -34,6 +34,7 @@ mic_threads = {}
 # Weather information
 town, owm_api = config["weather"]["town"], config["weather"]["owm_api"]
 
+
 @app.route("/")
 def hello():
     return TITLE
@@ -94,7 +95,9 @@ def toggle_lamp(lamp_number, active):
             if active:
                 mic_start_times[1] = time.time()
                 lamp_mic1.config(bg="red", text="Mic 1\n(0)")
-                mic_threads[1] = threading.Thread(target=update_mic_timer, args=(lamp_mic1, 1))
+                mic_threads[1] = threading.Thread(
+                    target=update_mic_timer, args=(lamp_mic1, 1)
+                )
                 mic_threads[1].start()
             else:
                 mic_start_times.pop(1, None)
@@ -105,7 +108,9 @@ def toggle_lamp(lamp_number, active):
             if active:
                 mic_start_times[2] = time.time()
                 lamp_mic2.config(bg="green", text="Mic 2\n(0)")
-                mic_threads[2] = threading.Thread(target=update_mic_timer, args=(lamp_mic2, 2))
+                mic_threads[2] = threading.Thread(
+                    target=update_mic_timer, args=(lamp_mic2, 2)
+                )
                 mic_threads[2].start()
             else:
                 mic_start_times.pop(2, None)
@@ -116,7 +121,9 @@ def toggle_lamp(lamp_number, active):
             if active:
                 mic_start_times[3] = time.time()
                 lamp_mic3.config(bg="blue", text="Mic 3\n(0)")
-                mic_threads[3] = threading.Thread(target=update_mic_timer, args=(lamp_mic3, 3))
+                mic_threads[3] = threading.Thread(
+                    target=update_mic_timer, args=(lamp_mic3, 3)
+                )
                 mic_threads[3].start()
             else:
                 mic_start_times.pop(3, None)
@@ -127,7 +134,9 @@ def toggle_lamp(lamp_number, active):
             if active:
                 mic_start_times[4] = time.time()
                 lamp_mic4.config(bg="orange2", text="Mic 4\n(0)")
-                mic_threads[4] = threading.Thread(target=update_mic_timer, args=(lamp_mic4, 4))
+                mic_threads[4] = threading.Thread(
+                    target=update_mic_timer, args=(lamp_mic4, 4)
+                )
                 mic_threads[4].start()
             else:
                 mic_start_times.pop(4, None)
@@ -224,7 +233,11 @@ root.configure(bg="#161616")
 temperature, weather_desc, windspeed = weather.get_weather(town, owm_api)
 
 website_label = tk.Label(
-    root, font=("Helvetica", 38), fg="yellow", bg="#161616", text=f"{config['info']['station_website']}\n{temperature}°C, {weather_desc}"
+    root,
+    font=("Helvetica", 38),
+    fg="yellow",
+    bg="#161616",
+    text=f"{config['info']['station_website']}\n{temperature}°C, {weather_desc}",
 )
 clock_label = tk.Label(root, font=("Helvetica", 196), fg="white", bg="#161616")
 worded_label = tk.Label(root, font=("Helvetica", 52), fg="gray95", bg="#161616")

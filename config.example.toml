@@ -7,9 +7,10 @@ station_website = "towerradio.co.uk"
 license_email = "harry@towerradio.co.uk"
 
 # Location for weather API
-[location]
-lat = "52.7000000"
-lon = "-0.1000000"
+[weather]
+town = "spalding"
+# You need a free api key for https://openweathermap.org/
+owm_api = ""
 
 [server]
 # Web server host IP

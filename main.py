@@ -32,7 +32,7 @@ mic_threads = {}
 
 
 # Weather information
-lat, lon = config["location"]["lat"], config["location"]["lon"]
+town, owm_api = config["weather"]["town"], config["weather"]["owm_api"]
 
 @app.route("/")
 def hello():
@@ -145,8 +145,7 @@ def update_time():
     # Mikey lamp - Red when AutoDJ is active, updates every 3 seconds
 
     if current_time.endswith("0:00"):
-        temperature, weather_code = weather.get_weather(lat, lon)
-        weather_desc = weather.weather_description(weather_code)
+        temperature, weather_desc, windspeed = weather.get_weather(town, owm_api)
         website_label.config(
             text=f"{config['info']['station_website']}\n{temperature}°C, {weather_desc}"
         )
@@ -222,8 +221,8 @@ else:
 root.configure(bg="#161616")
 
 # Create the labels for the clock and worded time
-temperature, weather_code, a = weather.get_weather(lat, lon)
-weather_desc = weather.weather_description(weather_code)
+temperature, weather_desc, windspeed = weather.get_weather(town, owm_api)
+
 website_label = tk.Label(
     root, font=("Helvetica", 38), fg="yellow", bg="#161616", text=f"{config['info']['station_website']}\n{temperature}°C, {weather_desc}"
 )

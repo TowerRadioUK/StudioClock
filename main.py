@@ -7,17 +7,26 @@ import os
 from tkinter import messagebox
 import weather
 
-VERSION = "1.1.0"
-TITLE = f"Tower Radio Studio Clock v{VERSION}"
-
 try:
     with open("config.toml", mode="rb") as fp:
         config = tomli.load(fp)
 except FileNotFoundError:
     messagebox.showerror(
-        TITLE, "Unable to locate configuration file. config.toml was not found."
+        "Unable to locate configuration file. config.toml was not found."
     )
     exit()
+
+try:
+    with open("pyproject.toml", mode="rb") as fp:
+        pyproject = tomli.load(fp)
+except FileNotFoundError:
+    messagebox.showerror(
+        "Unable to locate pyproject file. pyproject.toml was not found."
+    )
+    exit()
+
+VERSION = pyproject["tool"]["poetry"]["version"]
+TITLE = f"Tower Radio Studio Clock v{VERSION}"
 
 TITLE = f"{config['info']['station_name']} Studio Clock v{VERSION} - Licensed to {config['info']['license_email']}"
 

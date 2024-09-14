@@ -4,10 +4,13 @@
 
 ## Installation
 
-1. Install Python 3.12+ from the Microsoft Store
-2. Install the required packages by running `pip install -r requirements.txt`
-3. Rename `config.example.toml` to `config.toml` and edit the values to your liking
-4. Run the script by running `python main.py`
+1. Install Python 3.11+ from the Microsoft Store
+2. Install `pipx` by running `python3 -m pip install --user pipx`
+3. Run `.\pipx.exe ensurepath` to add `pipx` to your PATH
+4. Install `poetry` by running `pipx install poetry`
+5. Install the dependencies by running `poetry install`
+6. Rename `config.example.toml` to `config.toml` and edit the values to your liking
+7. Run the script by running `python main.py`
 
 ### To-do
 - Dead air lamp

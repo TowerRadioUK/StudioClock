@@ -1,4 +1,0 @@
-flask
-tk
-tomli
-AzuracastPy

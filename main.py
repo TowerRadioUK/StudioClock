@@ -165,16 +165,16 @@ def update_time():
     if current_time.endswith("0:00"):
         update_weather_and_date()
 
-    # Update labels and lamps every 5 seconds
-    if current_seconds % 5 == 0:
+    ## Update labels and lamps every 10 seconds
+    if current_seconds % 10 == 0:
         update_np_and_lamps()
-    
-    # Update messages lamp every 20 seconds
-    if current_seconds % 20 == 0:
+
+    ## Update messages lamp every 40 seconds
+    if current_seconds % 40 == 0:
         update_messages_lamp()
 
-    # Schedule the next update after 500 milliseconds
-    root.after(500, update_time)
+    # Schedule the next update after 1 second
+    root.after(1000, update_time)
 
 
 def update_weather_and_date():

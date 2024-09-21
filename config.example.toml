@@ -26,5 +26,11 @@ api_key = ""
 # AzuraCast Station ID
 station_id = 1
 
+[portal]
+# Portal API URL
+api_url = "https://towerradio.co.uk/api"
+# Portal API Key
+api_key = ""
+
 [other]
 debug = false

@@ -6,6 +6,7 @@ import tomli
 import os
 from tkinter import messagebox
 import weather
+import portal
 
 try:
     with open("config.toml", mode="rb") as fp:
@@ -83,21 +84,21 @@ def toggle_lamp(lamp_number, active):
         # Main Stereo
         case 2:
             if not active:
-                lamp_pil.config(bg="#161616")
+                lamp_studiolive.config(bg="#333333")
 
         # FAULT
         case 4:
             if active:
                 lamp_fault.config(bg="crimson", text="FAULT")
             else:
-                lamp_fault.config(bg="#161616", text="FAULT")
+                lamp_fault.config(bg="#333333", text="FAULT")
 
         # FAULT - Chat active
         case 41:
             if active:
                 lamp_fault.config(bg="crimson", text="FAULT\nChat active")
             else:
-                lamp_fault.config(bg="#161616", text="FAULT")
+                lamp_fault.config(bg="#333333", text="FAULT")
 
         # Mic 1 - Red
         case 5:
@@ -110,7 +111,7 @@ def toggle_lamp(lamp_number, active):
                 mic_threads[1].start()
             else:
                 mic_start_times.pop(1, None)
-                lamp_mic1.config(bg="#161616")
+                lamp_mic1.config(bg="#333333")
 
         # Mic 2 - Green
         case 6:
@@ -123,7 +124,7 @@ def toggle_lamp(lamp_number, active):
                 mic_threads[2].start()
             else:
                 mic_start_times.pop(2, None)
-                lamp_mic2.config(bg="#161616")
+                lamp_mic2.config(bg="#333333")
 
         # Mic 3 - Blue
         case 7:
@@ -136,7 +137,7 @@ def toggle_lamp(lamp_number, active):
                 mic_threads[3].start()
             else:
                 mic_start_times.pop(3, None)
-                lamp_mic3.config(bg="#161616")
+                lamp_mic3.config(bg="#333333")
 
         # Mic 4 - Yellow
         case 8:
@@ -149,36 +150,56 @@ def toggle_lamp(lamp_number, active):
                 mic_threads[4].start()
             else:
                 mic_start_times.pop(4, None)
-                lamp_mic4.config(bg="#161616")
+                lamp_mic4.config(bg="#333333")
 
 
 def update_time():
     current_time = time.strftime("%H:%M:%S")
     current_seconds = int(time.strftime("%S"))
-    worded_time = get_worded_time(current_time)
 
+    # Update clock and worded time
     clock_label.config(text=current_time)
-    worded_label.config(text=worded_time)
+    worded_label.config(text=get_worded_time(current_time))
 
-    # Mikey lamp - Red when AutoDJ is active, updates every 3 seconds
-
+    # Update date and weather info only when minute changes
     if current_time.endswith("0:00"):
-        date_label.config(text=f"{time.strftime('%A %d %B')}")
-        temperature, weather_desc, windspeed = weather.get_weather(town, owm_api)
-        website_label.config(text=f"{temperature}°C, {weather_desc}")
+        update_weather_and_date()
 
-    if current_seconds % 3 == 0:
-        np_label.config(text=azuracast.get_now_playing())
-        if azuracast.get_streamer() == "":
-            lamp_mikey.config(bg="darkorchid3")
-            lamp_pil.config(bg="#161616")
-        elif azuracast.get_streamer() == "FAULT":
-            lamp_fault.config(bg="crimson", text="FAULT\nNo streamer")
-        else:
-            lamp_pil.config(bg="green")
-            lamp_mikey.config(bg="#161616")
+    # Update labels and lamps every 5 seconds
+    if current_seconds % 5 == 0:
+        update_np_and_lamps()
+    
+    # Update messages lamp every 20 seconds
+    if current_seconds % 20 == 0:
+        update_messages_lamp()
 
+    # Schedule the next update after 500 milliseconds
     root.after(500, update_time)
+
+
+def update_weather_and_date():
+    date_label.config(text=f"{time.strftime('%A %d %B')}")
+    temperature, weather_desc, _ = weather.get_weather(town, owm_api)
+    website_label.config(text=f"{temperature}°C, {weather_desc}")
+
+def update_messages_lamp():
+    messages = portal.get_messages(config["portal"]["api_url"], config["portal"]["api_key"])
+    if len(messages) > 0: 
+        lamp_messages.config(bg="#6256CA")
+    else:
+        lamp_messages.config(bg="#333333")
+
+def update_np_and_lamps():
+    np_label.config(text=azuracast.get_now_playing())
+    streamer = azuracast.get_streamer()  # Store the result once and reuse
+    if streamer == "":
+        lamp_autodj.config(bg="darkorchid3")
+        lamp_studiolive.config(bg="#333333", text="Studio\nLive")
+    elif streamer == "FAULT":
+        lamp_fault.config(bg="crimson", text="FAULT\nNo streamer")
+    else:
+        lamp_studiolive.config(bg="green", text=f"{streamer}\nLive")
+        lamp_autodj.config(bg="#333333")
 
 
 def get_worded_time(current_time):
@@ -228,131 +249,94 @@ def start_flask_app():
     app.run(host=config["server"]["host"], port=config["server"]["port"])
 
 
-# Create the main window
+# Initialize the root window
 root = tk.Tk()
+
+# Window title and fullscreen
 if not config["other"]["debug"]:
     root.title(TITLE)
     root.attributes("-fullscreen", True)
 else:
     root.title(f"{TITLE} (Debug)")
-root.configure(bg="#161616")
+root.configure(bg="#1a1a1a")  # Slightly lighter dark background for better contrast
 
-# Create the labels for the clock and worded time
+# Get weather information
 temperature, weather_desc, windspeed = weather.get_weather(town, owm_api)
 
+# Set styles for fonts
+HEADER_FONT = ("Helvetica", 52, "bold")
+SUBHEADER_FONT = ("Helvetica", 48)
+CLOCK_FONT = ("Helvetica", 196, "bold")
+INFO_FONT = ("Helvetica", 32)
+LAMP_FONT = ("Helvetica", 28, "bold")
+
+# Create and configure labels
 website_label = tk.Label(
     root,
-    font=("Helvetica", 38),
+    font=INFO_FONT,
     fg="yellow",
-    bg="#161616",
+    bg="#1a1a1a",
     text=f"{temperature}°C, {weather_desc}",
 )
 date_label = tk.Label(
     root,
-    font=("Helvetica", 48),
+    font=SUBHEADER_FONT,
     fg="gray95",
-    bg="#161616",
+    bg="#1a1a1a",
     text=f"{time.strftime('%A %d %B')}",
 )
-clock_label = tk.Label(root, font=("Helvetica", 196), fg="white", bg="#161616")
-worded_label = tk.Label(root, font=("Helvetica", 52), fg="gray95", bg="#161616")
+clock_label = tk.Label(root, font=CLOCK_FONT, fg="white", bg="#1a1a1a")
+worded_label = tk.Label(root, font=HEADER_FONT, fg="gray95", bg="#1a1a1a")
 np_label = tk.Label(
     root,
-    font=("Helvetica", 32),
+    font=INFO_FONT,
     fg="yellow",
-    bg="#161616",
+    bg="#1a1a1a",
     text=azuracast.get_now_playing(),
 )
 
-size = 36
-# Create the lamp labels with text
-lamp_mic1 = tk.Label(
-    root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
-)
-lamp_mic2 = tk.Label(
-    root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
-)
-lamp_mic3 = tk.Label(
-    root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
-)
-lamp_mic4 = tk.Label(
-    root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
-)
+# Lamp labels with clear spacing and modern look
+lamp_style = {
+    "font": LAMP_FONT,
+    "width": 10,
+    "height": 2,
+    "bg": "#333333",  # Slightly lighter background for lamps
+    "fg": "white",
+}
 
-lamp_mikey = tk.Label(
-    root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
-)
-lamp_pil = tk.Label(
-    root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
-)
-lamp_atrium = tk.Label(
-    root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
-)
-lamp_fault = tk.Label(
-    root, font=("Helvetica", size), width=10, height=4, bg="#161616", fg="white"
-)
+lamp_mic1 = tk.Label(root, **lamp_style, text="Mic 1")
+lamp_mic2 = tk.Label(root, **lamp_style, text="Mic 2")
+lamp_mic3 = tk.Label(root, **lamp_style, text="Mic 3")
+lamp_mic4 = tk.Label(root, **lamp_style, text="Mic 4")
 
-lamp_mic1.config(bg="#161616", fg="gray95", text="Mic 1")
-lamp_mic2.config(bg="#161616", fg="gray95", text="Mic 2")
-lamp_mic3.config(bg="#161616", fg="gray95", text="Mic 3")
-lamp_mic4.config(bg="#161616", fg="gray95", text="Mic 4")
+lamp_autodj = tk.Label(root, **lamp_style, text="AutoDJ\nLive")
+lamp_studiolive = tk.Label(root, **lamp_style, text="Studio\nLive")
+lamp_messages = tk.Label(root, **lamp_style, text="Studio\nMessage")
+lamp_fault = tk.Label(root, **lamp_style, text="FAULT")
 
-lamp_mikey.config(bg="#161616", fg="gray95", text="AutoDJ\nLive")
-lamp_pil.config(bg="#161616", fg="gray95", text="Studio\nLive")
-lamp_atrium.config(bg="#161616", fg="gray95", text="Atrium\nPlaying")
-lamp_fault.config(bg="#161616", fg="gray95", text="FAULT")
+# Grid Layout for Lamps
+lamp_mic1.grid(row=6, column=0, padx=15, pady=15, sticky="s")
+lamp_mic2.grid(row=6, column=1, padx=15, pady=15, sticky="s")
+lamp_mic3.grid(row=6, column=2, padx=15, pady=15, sticky="s")
+lamp_mic4.grid(row=6, column=3, padx=15, pady=15, sticky="s")
 
-# Grid layout with centered labels and lamps at the top
-lamp_mic1.grid(row=6, column=0, padx=5, pady=5, sticky="s")
-lamp_mic2.grid(row=6, column=1, padx=5, pady=5, sticky="s")
-lamp_mic3.grid(row=6, column=2, padx=5, pady=5, sticky="s")
-lamp_mic4.grid(row=6, column=3, padx=5, pady=5, sticky="s")
+lamp_autodj.grid(row=0, column=0, padx=15, pady=15, sticky="n")
+lamp_studiolive.grid(row=0, column=1, padx=15, pady=15, sticky="n")
+lamp_messages.grid(row=0, column=2, padx=15, pady=15, sticky="n")
+lamp_fault.grid(row=0, column=3, padx=15, pady=15, sticky="n")
 
-# Grid layout with centered labels and lamps at the top
-lamp_mikey.grid(row=0, column=0, padx=5, pady=5, sticky="n")
-lamp_pil.grid(row=0, column=1, padx=5, pady=5, sticky="n")
-lamp_atrium.grid(row=0, column=2, padx=5, pady=5, sticky="n")
-lamp_fault.grid(row=0, column=3, padx=5, pady=5, sticky="n")
-
-website_label.grid(
-    row=1,
-    column=0,
-    columnspan=4,
-    sticky="n",
-    padx=20,
-    pady=0,
-)
-date_label.grid(
-    row=2,
-    column=0,
-    columnspan=4,
-    sticky="n",
-    padx=20,
-    pady=10,
-)
-clock_label.grid(
-    row=3,
-    column=0,
-    columnspan=4,
-    sticky="n",
-    padx=20,
-    pady=10,
-)
+# Grid Layout for Labels
+website_label.grid(row=1, column=0, columnspan=4, sticky="n", padx=20, pady=(10, 0))
+date_label.grid(row=2, column=0, columnspan=4, sticky="n", padx=20, pady=(10, 0))
+clock_label.grid(row=3, column=0, columnspan=4, sticky="n", padx=20, pady=10)
 worded_label.grid(row=4, column=0, columnspan=4, sticky="n", padx=20, pady=10)
 np_label.grid(row=5, column=0, columnspan=4, sticky="n", padx=20, pady=10)
 
-root.grid_columnconfigure(0, weight=1)
-root.grid_columnconfigure(1, weight=1)
-root.grid_columnconfigure(2, weight=1)
-root.grid_columnconfigure(3, weight=1)
-root.grid_rowconfigure(0, weight=1)
-root.grid_rowconfigure(1, weight=1)
-root.grid_rowconfigure(2, weight=1)
-root.grid_rowconfigure(3, weight=1)
-root.grid_rowconfigure(4, weight=1)
-root.grid_rowconfigure(5, weight=1)
-root.grid_rowconfigure(6, weight=1)
-
+# Grid Configurations for Weight and Resizing
+for i in range(4):
+    root.grid_columnconfigure(i, weight=1)
+for i in range(7):
+    root.grid_rowconfigure(i, weight=1)
 
 # Start the clock update loop
 update_time()
@@ -385,7 +369,7 @@ root.bind(
 root.bind(
     "x",
     lambda event: messagebox.showinfo(TITLE, "Cleared fault")
-    and lamp_fault.config(bg="#161616", text="FAULT"),
+    and lamp_fault.config(bg="#333333", text="FAULT"),
 )
 
 # About dialog on "a"

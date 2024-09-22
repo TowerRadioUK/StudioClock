@@ -163,15 +163,15 @@ def update_time():
 
     # Update date and weather info only when minute changes
     if current_time.endswith("0:00"):
-        update_weather_and_date()
+        threading.Thread(target=update_weather_and_date).start()
 
     ## Update labels and lamps every 10 seconds
     if current_seconds % 10 == 0:
-        update_np_and_lamps()
+        threading.Thread(target=update_np_and_lamps).start()
 
     ## Update messages lamp every 40 seconds
-    if current_seconds % 40 == 0:
-        update_messages_lamp()
+    if current_seconds == 40:
+        threading.Thread(target=update_messages_lamp).start()
 
     # Schedule the next update after 1 second
     root.after(1000, update_time)
@@ -182,12 +182,16 @@ def update_weather_and_date():
     temperature, weather_desc, _ = weather.get_weather(town, owm_api)
     website_label.config(text=f"{temperature}°C, {weather_desc}")
 
+
 def update_messages_lamp():
-    messages = portal.get_messages(config["portal"]["api_url"], config["portal"]["api_key"])
-    if len(messages) > 0: 
+    messages = portal.get_messages(
+        config["portal"]["api_url"], config["portal"]["api_key"]
+    )
+    if len(messages) > 0:
         lamp_messages.config(bg="#6256CA")
     else:
         lamp_messages.config(bg="#333333")
+
 
 def update_np_and_lamps():
     np_label.config(text=azuracast.get_now_playing())

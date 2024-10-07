@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "studioclock"
-version = "1.3.1"
+version = "1.4.0"
 description = "TRSclock - The Tower Radio Studio Clock"
 authors = ["hwalker928 <harry@harryw.link>"]
 readme = "README.md"

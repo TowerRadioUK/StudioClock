@@ -10,7 +10,7 @@ package-mode = false
 python = "^3.11"
 Flask = "^3.0.3"
 tk = "^0.1.0"
-tomli = "^2.0.1"
+tomli = "^2.0.2"
 AzuracastPy = "^0.0.2"
 requests = "^2.32.3"
 

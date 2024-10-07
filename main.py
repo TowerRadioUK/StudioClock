@@ -40,6 +40,7 @@ app = Flask(__name__)
 mic_start_times = {}
 mic_threads = {}
 
+keepalive_time = time.time()
 
 # Weather information
 town, owm_api = config["weather"]["town"], config["weather"]["owm_api"]
@@ -48,6 +49,14 @@ town, owm_api = config["weather"]["town"], config["weather"]["owm_api"]
 @app.route("/")
 def hello():
     return TITLE
+
+
+@app.route("/keepalive", methods=["POST"])
+def keepalive():
+    global keepalive_time
+    keepalive_time = time.time()
+
+    return jsonify({"message": "Received keepalive"}), 200
 
 
 @app.route("/channelLive", methods=["POST"])
@@ -173,6 +182,10 @@ def update_time():
     if current_seconds == 40:
         threading.Thread(target=update_messages_lamp).start()
 
+    ## Update messages lamp every 40 seconds
+    if current_seconds == 20:
+        threading.Thread(target=update_keepalive_fault).start()
+
     # Schedule the next update after 1 second
     root.after(1000, update_time)
 
@@ -191,6 +204,11 @@ def update_messages_lamp():
         lamp_messages.config(bg="#6256CA")
     else:
         lamp_messages.config(bg="#333333")
+
+
+def update_keepalive_fault():
+    if keepalive_time < time.time() - 45:
+        lamp_fault.config(bg="crimson", text="FAULT\nMIDISync Failure")
 
 
 def update_np_and_lamps():

@@ -208,7 +208,7 @@ def update_messages_lamp():
 
 def update_keepalive_fault():
     if keepalive_time < time.time() - 45:
-        lamp_fault.config(bg="crimson", text="FAULT\nMIDISync Failure")
+        lamp_fault.config(bg="crimson", text="FAULT\nSync Failure")
 
 
 def update_np_and_lamps():

@@ -182,8 +182,8 @@ def update_time():
     if current_seconds == 40:
         threading.Thread(target=update_messages_lamp).start()
 
-    ## Update messages lamp every 40 seconds
-    if current_seconds == 20:
+    ## Update messages lamp every 20 seconds
+    if current_seconds % 20 == 0:
         threading.Thread(target=update_keepalive_fault).start()
 
     # Schedule the next update after 1 second
@@ -207,7 +207,7 @@ def update_messages_lamp():
 
 
 def update_keepalive_fault():
-    if keepalive_time < time.time() - 45:
+    if keepalive_time < time.time() - 20:
         lamp_fault.config(bg="crimson", text="FAULT\nSync Failure")
 
 

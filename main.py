@@ -56,6 +56,9 @@ def keepalive():
     global keepalive_time
     keepalive_time = time.time()
 
+    if lamp_fault.cget("text") == "FAULT\nSync Failure":
+        lamp_fault.config(bg="#333333", text="FAULT")
+
     return jsonify({"message": "Received keepalive"}), 200
 
 

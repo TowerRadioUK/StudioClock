@@ -12,7 +12,10 @@ client = AzuracastClient(
     radio_url=config["azuracast"]["radio_url"], x_api_key=config["azuracast"]["api_key"]
 )
 
-station = client.station(config["azuracast"]["station_id"])
+try:
+    station = client.station(config["azuracast"]["station_id"])
+except:
+    print("Error: Unable to obtain station information. Check your internet connection and configuration settings.")
 
 
 def get_now_playing():

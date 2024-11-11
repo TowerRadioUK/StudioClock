@@ -4,7 +4,11 @@ import requests
 def get_weather(town, api):
     # Use the OpenWeatherMap API to get current weather data.
     url = f"https://api.openweathermap.org/data/2.5/weather?q={town},uk&APPID={api}&units=metric"
-    response = requests.get(url)
+    try:
+        response = requests.get(url)
+    except:
+        print("Error: Unable to obtain weather information. Check your internet connection and configuration settings.")
+        return "0", "", ""
 
     if response.status_code == 200:
         data = response.json()["main"]
@@ -15,6 +19,6 @@ def get_weather(town, api):
         desc = weather[0]["description"]
         return temperature, desc, windspeed
     elif response.status_code == 401:  # Unauthorised - invalid API key
-        raise ValueError("Invalid API key")
+        return "1", "", ""
     else:
-        raise ValueError("Unable to fetch weather data.")
+        return "0", "", ""

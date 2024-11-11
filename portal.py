@@ -9,7 +9,5 @@ def get_messages(url, key):
 
     if response.status_code == 200:
         return response.json()
-    elif response.status_code == 403:  # Unauthorised - invalid API key
-        raise ValueError("Invalid API key")
     else:
-        raise ValueError("Unable to fetch messages.")
+        return []

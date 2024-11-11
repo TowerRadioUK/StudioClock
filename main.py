@@ -18,15 +18,15 @@ except FileNotFoundError:
     exit()
 
 try:
-    with open("pyproject.toml", mode="rb") as fp:
+    with open("project.toml", mode="rb") as fp:
         pyproject = tomli.load(fp)
 except FileNotFoundError:
     messagebox.showerror(
-        "Unable to locate pyproject file. pyproject.toml was not found."
+        "Unable to locate project file. project.toml was not found."
     )
     exit()
 
-VERSION = pyproject["tool"]["poetry"]["version"]
+VERSION = pyproject["info"]["version"]
 TITLE = f"Tower Radio Studio Clock v{VERSION}"
 
 TITLE = f"{config['info']['station_name']} Studio Clock v{VERSION} - Licensed to {config['info']['license_email']}"

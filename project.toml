@@ -1,0 +1,6 @@
+[info]
+name = "studioclock"
+version = "1.5.0"
+description = "TRSclock - The Tower Radio Studio Clock"
+authors = ["hwalker928 <harry@towerradio.co.uk>"]
+readme = "README.md"
